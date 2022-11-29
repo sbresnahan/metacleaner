@@ -1,4 +1,4 @@
-# Example of known undesired and desired sequence databases (plant ITS1/ITS2 regions)
+# Example of contrasting sequence databases (plant vs non-plant ITS1/ITS2 regions)
 
 ## Step 1: removal of non-plant sequences from database:
 
