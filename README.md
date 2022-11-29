@@ -29,23 +29,22 @@ metacleaner requires as input:
 
 Additionally, taxonomizr requires an SQLite database called `accessionTaxa.sql`. The directory containing this file can be specified using `-d` or `--taxadb`, or will otherwise be generated via `taxonomizr::prepareDatabase()` (warning: this requires up to 70Gb and will take several hours to complete). 
 
-### Options:```
--q, --query <(required) path to query fasta file>
--o, --outdir <path to output directory>
--e, --pident <(default=100) percent identity to bad sequence database threshold for filtering>
--v, --qcovs <(default=100) query cover to bad sequence database threshold for filtering>
--r, --runmode <(default=1)>
+### Options:
+`-q, --query <(required) path to query fasta file>\
+-o, --outdir <path to output directory>\
+-e, --pident <(default=100) percent identity to bad sequence database threshold for filtering>\
+-v, --qcovs <(default=100) query cover to bad sequence database threshold for filtering>\
+-r, --runmode <(default=1)>\
    (1) = search for query sequences against good and bad blastdbs
    (2) = search for query sequences in only good blastdb
    (3) = search for query sequences in only bad blastdb
--s, --sortonly <(default=F) one of T/F. T = start at sorting step (requires previously generated blastn output files in output directory specified by -o)
--l, --filterlevel <(default=genus) one of superkingdom, phylum, class, order, family, genus, or species>
--b, --blastdbdir <(required) path to badblastdb directory>
--x, --badblastdb <(required) badblastdb>
--f, --badblastdbinput <path to fasta file for badblastdb (required if badblastdb does not already exist in directory specified by -b)>
--y, --goodblastdb <(required) goodblastdb>
--g, --goodblastdbinput <path to fasta file for goodblastdb (required if goodblastdb does not already exist in directory specified by -b)>
--d, --taxadb <(required) path to directory containing accessionTaxa.sql file for taxonomizr>
--c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>
--t, --threads <(default=1) number of threads for blastn>
-```
+-s, --sortonly <(default=F) one of T/F. T = start at sorting step (requires previously generated blastn output files in output directory specified by -o)\
+-l, --filterlevel <(default=genus) one of superkingdom, phylum, class, order, family, genus, or species>\
+-b, --blastdbdir <(required) path to badblastdb directory>\
+-x, --badblastdb <(required) badblastdb>\
+-f, --badblastdbinput <path to fasta file for badblastdb (required if badblastdb does not already exist in directory specified by -b)>\
+-y, --goodblastdb <(required) goodblastdb>\
+-g, --goodblastdbinput <path to fasta file for goodblastdb (required if goodblastdb does not already exist in directory specified by -b)>\
+-d, --taxadb <(required) path to directory containing accessionTaxa.sql file for taxonomizr>\
+-c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>\
+-t, --threads <(default=1) number of threads for blastn>`
