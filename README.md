@@ -34,6 +34,12 @@ metacleaner requires as input:
 
 Additionally, taxonomizr requires an SQLite database called `accessionTaxa.sql`. The directory containing this file can be specified using `-d` or `--taxadb`, or will otherwise be generated via `taxonomizr::prepareDatabase()` (warning: this requires up to 70Gb of disk space and may take several hours to complete). 
 
+### Installation:
+`pip install -e /path/to/repository`
+
+### Usage:
+`metacleaner --query /path/to/query.fasta --outdir /path/to/output_directory --pident 100 --qcovs 99 --runmode 1 --filterlevel genus --blastdbdir /path/to/blastdb_directory --badblastdb badSeqs --badblastdbinput badSeqs.fasta --goodblastdb goodSeqs --goodblastdbinput goodSeqs.fasta --taxadb /path/to/directory/containing/accessionTaxa.sql`
+
 ### Options:
 ```
 -q, --query <(required) path to query fasta file>   
@@ -47,11 +53,11 @@ Additionally, taxonomizr requires an SQLite database called `accessionTaxa.sql`.
 -s, --sortonly <(default=F) one of T/F. T = start at sorting step (requires previously generated blastn output files in output directory specified by -o)    
 -l, --filterlevel <(default=genus) one of superkingdom, phylum, class, order, family, genus, or species>   
 -b, --blastdbdir <(required) path to badblastdb directory>   
--x, --badblastdb <(required) badblastdb>    
+-x, --badblastdb <(required) badblastdb name>    
 -f, --badblastdbinput <path to fasta file for badblastdb (required if badblastdb does not already exist in directory specified by -b)>   
--y, --goodblastdb <(required) goodblastdb>    
+-y, --goodblastdb <(required) goodblastdb name>    
 -g, --goodblastdbinput <path to fasta file for goodblastdb (required if goodblastdb does not already exist in directory specified by -b)>   
--d, --taxadb <(required) path to directory containing accessionTaxa.sql file for taxonomizr>    
+-d, --taxadb <(required unless constructing from scratch) path to directory containing accessionTaxa.sql file for taxonomizr>    
 -c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>   
 -t, --threads <(default=1) number of threads for blastn>   
 ```
