@@ -1,6 +1,6 @@
 # Example of contrasting sequence databases (plant vs non-plant ITS1/ITS2 regions)
 
-## Step 1: removal of non-plant sequences from database:
+## "Bad" sequences: for removal of non-plant sequences from query database:
 
 Downloaded sequences manually from NCBI:
 - ITS1[All Fields] NOT "Embryophyta"[Organism]
@@ -25,7 +25,7 @@ awk '/^>/ {printf("\n%s\n",$0);next; } { printf("%s",$0);}  END {printf("\n");}'
 cat ITS1_ITS2_nonplant_collapsed_fixed.fasta | perl -pe 's/^>gi\|\d+\|.*\|(.*)\|.*/>$1/' | sed '/^>/ s/ .*//' > ITS1_ITS2_nonplant_database.fasta  
 ```
 
-## Step 2: removal of "mislabeled" sequences from database:
+## "Good" sequences - for removal of "mislabeled" sequences from query database:
 
 Downloaded sequences manually from NCBI:
 - ITS1[All Fields] AND "Embryophyta"[Organism]
