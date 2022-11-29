@@ -44,8 +44,8 @@ Additionally, taxonomizr requires an SQLite database called `accessionTaxa.sql`.
 ```
 -q, --query <(required) path to query fasta file>   
 -o, --outdir <path to output directory>   
--e, --pident <(default=100) percent identity to bad sequence database threshold for filtering>   
--v, --qcovs <(default=100) query cover to bad sequence database threshold for filtering>   
+-e, --pident <(default=100) percent identity threshold for filtering>   
+-v, --qcovs <(default=100) query cover threshold for filtering>   
 -r, --runmode <(default=1)>   
    (1) = search for query sequences against good and bad blastdbs
    (2) = search for query sequences in only good blastdb
