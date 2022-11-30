@@ -312,7 +312,8 @@ def savefinalfasta():
 
 def cleanup():
     subprocess.call(['cp', tempdir+"/"+fileout+"_badseqids.txt", arg_outdir+"/"+fileout+"_badseqids.txt"])
-    subprocess.call(['rm', '-r', tempdir])
+    if arg_sortonly=="F":
+        subprocess.call(['rm', '-r', tempdir])
 
 
 if __name__ == "__main__":
