@@ -3,8 +3,8 @@
 ## "Bad" sequences (for removal of non-plant sequences from query database):
 
 Downloaded sequences manually from NCBI:
-- ITS1[All Fields] NOT "Embryophyta"[Organism]
-- ITS2[All Fields] NOT "Embryophyta"[Organism]
+- (((ITS1) OR 5.8S) OR 28S) NOT Embryophyta[Organism] AND ("0"[SLEN] : "10000"[SLEN]) 
+- (((ITS1) OR 5.8S) OR 28S) NOT Embryophyta[Organism] AND ("0"[SLEN] : "10000"[SLEN]) 
 
 Removed spaces and cleaned up sequence headers:
 ```
@@ -28,8 +28,8 @@ cat ITS1_ITS2_nonplant_collapsed_fixed.fasta | perl -pe 's/^>gi\|\d+\|.*\|(.*)\|
 ## "Good" sequences (for removal of "mislabeled" sequences from query database):
 
 Downloaded sequences manually from NCBI:
-- ITS1[All Fields] AND "Embryophyta"[Organism]
-- ITS2[All Fields] AND "Embryophyta"[Organism]
+- (((ITS1) OR 5.8S) OR 28S) AND Embryophyta[Organism] AND ("0"[SLEN] : "10000"[SLEN]) 
+- (((ITS2) OR 5.8S) OR 28S) AND Embryophyta[Organism] AND ("0"[SLEN] : "10000"[SLEN]) 
 
 Removed spaces and cleaned up sequence headers:
 ```
