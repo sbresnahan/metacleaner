@@ -34,6 +34,7 @@ metacleaner requires as input:
 Additionally, taxonomizr requires an SQLite database called `accessionTaxa.sql`. The directory containing this file can be specified using `-d` or `--taxadb`, or will otherwise be generated via `taxonomizr::prepareDatabase()` (warning: this requires up to 70Gb of disk space and may take several hours to complete). 
 
 ### Usage:
+#### Important note: metacleaner.py must be run from the same directory as taxafilter.R!
 ```
 python3 metacleaner.py --query /path/to/query.fasta --outdir /path/to/output_directory --blastdbdir /path/to/blastdb_directory --badblastdb badSeqs --badblastdbinput badSeqs.fasta --goodblastdb goodSeqs --goodblastdbinput goodSeqs.fasta --taxadb /path/to/directory/containing/accessionTaxa.sql
 ```
