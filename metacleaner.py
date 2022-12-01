@@ -333,6 +333,7 @@ if __name__ == "__main__":
         tempdir = arg_outdir + "/" + "temp_" + str(time.time()).split('.', 1)[0]
         print('Creating temporary directory at: ' + tempdir)
         os.makedirs(tempdir)
+        print('----------------------------------')
 
         check_badblastdb()
         check_goodblastdb()
