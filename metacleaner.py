@@ -36,8 +36,6 @@ def myfunc(argv):
     arg_qcovs = "100"
     global arg_threads
     arg_threads = "1"
-    global arg_runmode
-    arg_runmode = "1"
     global arg_sortonly
     arg_sortonly = "F"
     global arg_filterlevel
@@ -49,10 +47,6 @@ def myfunc(argv):
     \n-o, --outdir <path to output directory>\
     \n-e, --pident <(default=100) percent identity threshold for filtering>\
     \n-v, --qcovs <(default=100) query cover threshold for filtering>\
-    \n-r, --runmode <(default=1)>\
-    \n             (1) = search for query sequences against good and bad blastdbs,\
-    \n             (2) = search for query sequences in only good blastdb,\
-    \n             (3) = search for query sequences in only bad blastdb\
     \n-s, --sortonly <(default=F), T/F: start at sorting step (requires previously generated blastn output files in output directory specified by -o)>\
     \n-l, --filterlevel <(default=genus) one of superkingdom, phylum, class, order, family, genus, or species>\
     \n-b, --blastdbdir <(required) path to badblastdb directory>\
@@ -65,9 +59,9 @@ def myfunc(argv):
     \n-t, --threads <(default=1) number of threads for blastn>".format(argv[0])
 
     try:
-        opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:r:s:l:d:", ["help", "query=", "blastdbdir=", "badblastdb=", \
+        opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:s:l:d:", ["help", "query=", "blastdbdir=", "badblastdb=", \
         "goodblastdb=", "badblastdbinput=", "goodblastdbinput=", "outdir=", "chunks=", "pident=", \
-        "qcovs=", "threads=", "runmode=", "sortonly=", "filterlevel==","taxadb=="])
+        "qcovs=", "threads=", "sortonly=", "filterlevel==","taxadb=="])
     except:
         print(arg_help)
         sys.exit(2)
@@ -98,8 +92,6 @@ def myfunc(argv):
             arg_qcovs = str(arg)
         elif opt in ("-t", "--threads"):
             arg_threads = str(arg)
-        elif opt in ("-r", "--runmode"):
-            arg_runmode = str(arg)
         elif opt in ("-s", "--sortonly"):
             arg_sortonly = arg
         elif opt in ("-l", "--filterlevel"):
@@ -122,7 +114,6 @@ def myfunc(argv):
         print('pident =', arg_pident)
         print('qcovs =', arg_qcovs)
         print('threads =', arg_threads)
-        print('runmode =', arg_runmode)
         print('sortonly =', arg_sortonly)
         print('filterlevel =', arg_filterlevel)
         print('taxadb =', arg_taxadb)
@@ -278,15 +269,12 @@ def goodsort():
                 else:
                     badseqids.append(i)
                     badtophit.append(chunk_sub.iloc[0]['sseqid'])
-    print(">>> "+str(len(badseqids))+" accession(s) filtered")
+    print(">>> "+str(len(badseqids))+" accession(s) flagged")
     badseqout = pd.DataFrame({'badseqid' : badseqids, 'tophit' : badtophit, 'reason' : ["not in "+arg_goodblastdb] * len(badseqids)})
     goodseqout = pd.DataFrame({'goodseqid' : goodseqids, 'tophit' : goodtophit})
-    if arg_runmode=="1":
-        oldbadseqids = pd.read_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t')
-        newbadseqids = pd.concat([oldbadseqids,badseqout])
-        newbadseqids.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
-    if arg_runmode=="2":
-        badseqout.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
+    oldbadseqids = pd.read_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t')
+    newbadseqids = pd.concat([oldbadseqids,badseqout])
+    newbadseqids.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
     goodseqout.to_csv(tempdir+"/"+fileout+"_goodseqids.txt", sep='\t', header=True, index=False)
     print('\n----------------------------------')
 
@@ -294,7 +282,7 @@ def taxafilter():
     print("Collating taxonomy information and filtering sequences with mislabeled "+arg_filterlevel)
     subprocess.call(['Rscript', 'taxafilter.R', arg_taxadb+"/accessionTaxa.sql",\
     tempdir+"/"+fileout+"_badseqids.txt", tempdir+"/"+fileout+"_goodseqids.txt",\
-    arg_outdir, arg_filterlevel, arg_runmode, fileout])
+    arg_outdir, arg_filterlevel, fileout, arg_badblastdb, arg_goodblastdb])
     print('\n----------------------------------')
 
 def savefinalfasta():
@@ -304,9 +292,20 @@ def savefinalfasta():
             headers.append(record.description)
     badseqids = list(pd.read_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=0)['badseqid'])
     goodseqids = set([x for x in headers if x not in badseqids])
-    print("Saving cleaned fasta file: "+str(len(badseqids))+" accession(s) filtered, "+str(len(goodseqids))+" accession(s) retained")
+    print("Saving cleaned fasta file: of "+str(len(headers))+" query accession(s), "\
+    +str(len(badseqids))+" accession(s) filtered, "+str(len(goodseqids))+" accession(s) retained")
     query_filtered = (r for r in SeqIO.parse(arg_query, "fasta") if r.id in goodseqids)
     SeqIO.write(query_filtered,arg_outdir+"/"+fileout+"_clean.fasta","fasta")
+    newheaders = []
+    with open(arg_outdir+"/"+fileout+"_clean.fasta", "r") as f:
+        for record in SeqIO.parse(f, "fasta"):
+            newheaders.append(record.description)
+    cleantax = pd.read_csv(tempdir+"/"+fileout+"_clean.tax", sep='\t', header=None)
+    cleantax.rename(columns={0: 'qseqid', 1: 't1', 2: 't2', 3: 't3', 4: 't4'}, inplace=True)
+    cleantax['qseqidcat'] = pd.Categorical(cleantax['qseqid'], categories=newheaders, ordered=True)
+    cleantax.sort_values('qseqidcat', inplace=True)
+    cleantax = cleantax.drop('qseqidcat', axis=1)
+    cleantax.to_csv(tempdir+"/"+fileout+"_clean.tax", sep='\t', header=None, index=None)
     print('\n----------------------------------')
 
 
@@ -314,51 +313,39 @@ def cleanup():
     subprocess.call(['cp', tempdir+"/"+fileout+"_badseqids.txt", arg_outdir+"/"+fileout+"_badseqids.txt"])
     if arg_sortonly=="F":
         subprocess.call(['rm', '-r', tempdir])
+    else:
+        subprocess.call(['rm', tempdir+"/"+fileout+"_goodseqids.txt"])
 
 
 if __name__ == "__main__":
 
     myfunc(sys.argv)
-
+    
     global fileout
     head, tail = os.path.split(arg_query)
     fileout = tail.split('.', 1)[0]
+
+    if arg_sortonly=="T":
+        tempdir = arg_outdir
 
     if arg_sortonly=="F":
         global tempdir
         tempdir = arg_outdir + "/" + "temp_" + str(time.time()).split('.', 1)[0]
         print('Creating temporary directory at: ' + tempdir)
         os.makedirs(tempdir)
-        if arg_runmode=="1":
-            check_badblastdb()
-            check_goodblastdb()
-        if arg_runmode=="2":
-            check_goodblastdb()
-        if arg_runmode=="3":
-            check_badblastdb()
-
-    if arg_sortonly=="T":
-        tempdir = arg_outdir
-
-    if arg_sortonly=="F":
+        
+        check_badblastdb()
+        check_goodblastdb()
         split_fasta()
-
-    if arg_runmode=="1":
-        if arg_sortonly=="F":
-            badblastn()
-        badsort()
-        if arg_sortonly=="F":
-            goodblastn()
-        goodsort()
-    if arg_runmode=="2":
-        if arg_sortonly=="F":
-            goodblastn()
-        goodsort()
-    if arg_runmode=="3":
-        if arg_sortonly=="F":
-            badblastn()
-        badsort()
-
+        
+    if arg_sortonly=="F":
+        badblastn()
+    badsort()
+    
+    if arg_sortonly=="F":
+        goodblastn()
+    goodsort()
+   
     taxafilter()
     savefinalfasta()
     cleanup()
