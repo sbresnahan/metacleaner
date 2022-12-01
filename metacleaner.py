@@ -321,6 +321,7 @@ if __name__ == "__main__":
 
     myfunc(sys.argv)
     
+    global tempdir
     global fileout
     head, tail = os.path.split(arg_query)
     fileout = tail.split('.', 1)[0]
@@ -329,11 +330,10 @@ if __name__ == "__main__":
         tempdir = arg_outdir
 
     if arg_sortonly=="F":
-        global tempdir
         tempdir = arg_outdir + "/" + "temp_" + str(time.time()).split('.', 1)[0]
         print('Creating temporary directory at: ' + tempdir)
         os.makedirs(tempdir)
-        
+
         check_badblastdb()
         check_goodblastdb()
         split_fasta()
