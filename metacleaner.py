@@ -168,7 +168,6 @@ def split_fasta():
     if shutil.which("pyfasta") is not None:
         print('Splitting query fasta file into ' + arg_chunks + " chunks")
         subprocess.call(['cp', arg_query, tempdir])
-        head, tail = os.path.split(arg_query)
         querycopy = tempdir + "/" + fileout
         subprocess.call(['pyfasta', 'split', '-n', arg_chunks, querycopy], \
         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
