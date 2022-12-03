@@ -279,8 +279,10 @@ def goodsort():
     print('\n----------------------------------')
 
 def taxafilter():
-    print("Collating taxonomy information and filtering sequences with mislabeled "+arg_filterlevel)
-    subprocess.call(['Rscript', 'taxafilter.R', arg_taxadb+"/accessionTaxa.sql",\
+    scriptdir = os.path.realpath(os.path.dirname(__file__))
+    print("> Collating taxonomy information and filtering sequences with mislabeled "+arg_filterlevel)
+    print("taxafilter.R is in "+scriptdir)
+    subprocess.call(['Rscript', scriptdir+'/taxafilter.R', arg_taxadb+"/accessionTaxa.sql",\
     tempdir+"/"+fileout+"_badseqids.txt", tempdir+"/"+fileout+"_goodseqids.txt",\
     arg_outdir, arg_filterlevel, fileout, arg_badblastdb, arg_goodblastdb])
     print('\n----------------------------------')
@@ -292,7 +294,7 @@ def savefinalfasta():
             headers.append(record.description)
     badseqids = list(pd.read_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=0)['badseqid'])
     goodseqids = set([x for x in headers if x not in badseqids])
-    print("Saving cleaned fasta file: of "+str(len(headers))+" query accession(s), "\
+    print("> Saving cleaned fasta file: of "+str(len(headers))+" query accession(s), "\
     +str(len(badseqids))+" accession(s) filtered, "+str(len(goodseqids))+" accession(s) retained")
     query_filtered = (r for r in SeqIO.parse(arg_query, "fasta") if r.id in goodseqids)
     SeqIO.write(query_filtered,arg_outdir+"/"+fileout+"_clean.fasta","fasta")
@@ -300,12 +302,12 @@ def savefinalfasta():
     with open(arg_outdir+"/"+fileout+"_clean.fasta", "r") as f:
         for record in SeqIO.parse(f, "fasta"):
             newheaders.append(record.description)
-    cleantax = pd.read_csv(tempdir+"/"+fileout+"_clean.tax", sep='\t', header=None)
+    cleantax = pd.read_csv(arg_outdir+"/"+fileout+"_clean.tax", sep='\t', header=None)
     cleantax.rename(columns={0: 'qseqid', 1: 't1', 2: 't2', 3: 't3', 4: 't4'}, inplace=True)
     cleantax['qseqidcat'] = pd.Categorical(cleantax['qseqid'], categories=newheaders, ordered=True)
     cleantax.sort_values('qseqidcat', inplace=True)
     cleantax = cleantax.drop('qseqidcat', axis=1)
-    cleantax.to_csv(tempdir+"/"+fileout+"_clean.tax", sep='\t', header=None, index=None)
+    cleantax.to_csv(arg_outdir+"/"+fileout+"_clean.tax", sep='\t', header=None, index=None)
     print('\n----------------------------------')
 
 
@@ -320,7 +322,7 @@ def cleanup():
 if __name__ == "__main__":
 
     myfunc(sys.argv)
-    
+
     global tempdir
     global fileout
     head, tail = os.path.split(arg_query)
@@ -338,15 +340,15 @@ if __name__ == "__main__":
         check_badblastdb()
         check_goodblastdb()
         split_fasta()
-        
+
     if arg_sortonly=="F":
         badblastn()
     badsort()
-    
+
     if arg_sortonly=="F":
         goodblastn()
     goodsort()
-   
+
     taxafilter()
     savefinalfasta()
     cleanup()
