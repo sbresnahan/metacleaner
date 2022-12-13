@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# For debugging in RStudio: reticulate::py_config()
 
 import sys
 import getopt
