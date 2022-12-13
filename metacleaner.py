@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# For debugging in RStudio: reticulate::py_config()
 
 import sys
 import getopt
@@ -42,6 +43,8 @@ def myfunc(argv):
     arg_filterlevel = "genus"
     global arg_taxadb
     arg_taxadb = ""
+    global arg_addfilter
+    arg_addfilter = "NONE"
     arg_help = "\nmetacleaner options:\
     \n-q, --query <(required) path to query fasta file>\
     \n-o, --outdir <path to output directory>\
@@ -56,12 +59,14 @@ def myfunc(argv):
     \n-g, --goodblastdbinput <path to fasta file for goodblastdb (required if goodblastdb does not already exist in directory specified by -b)>\
     \n-d, --taxadb <(required unless constructing from scratch) path to directory containing accessionTaxa.sql file for taxonomizr>\
     \n-c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>\
-    \n-t, --threads <(default=1) number of threads for blastn>".format(argv[0])
+    \n-t, --threads <(default=1) number of threads for blastn>\
+    \n-w, --addfilter <Additional filter level, one of taxa levels as in -l (--filterlevel) and filter value, separated by a comma;\
+    \n Hits at pident and qcovs with taxa info other than in addfilter will be removed.>".format(argv[0])
 
     try:
-        opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:s:l:d:", ["help", "query=", "blastdbdir=", "badblastdb=", \
+        opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:s:l:d:w:", ["help", "query=", "blastdbdir=", "badblastdb=", \
         "goodblastdb=", "badblastdbinput=", "goodblastdbinput=", "outdir=", "chunks=", "pident=", \
-        "qcovs=", "threads=", "sortonly=", "filterlevel==","taxadb=="])
+        "qcovs=", "threads=", "sortonly=", "filterlevel==","taxadb==","addfilter=="])
     except:
         print(arg_help)
         sys.exit(2)
@@ -98,6 +103,8 @@ def myfunc(argv):
             arg_filterlevel = arg
         elif opt in ("-d", "--taxadb"):
             arg_taxadb = arg
+        elif opt in ("-w", "--addfilter"):
+            arg_addfilter = arg
 
     print('----------------------------------')
     if not os.stat(arg_query).st_size == 0:
@@ -117,6 +124,7 @@ def myfunc(argv):
         print('sortonly =', arg_sortonly)
         print('filterlevel =', arg_filterlevel)
         print('taxadb =', arg_taxadb)
+        print('addfilter =', arg_addfilter)
         print('----------------------------------')
     else:
         print("Error: query file specified by -q does not exist.")
@@ -163,16 +171,14 @@ def check_goodblastdb():
             print("Error: BLAST command line tools are not installed.")
             sys.exit(2)
 
-def split_fasta():
+def split_fasta(file_in,file_out):
     print("> Preprocessing query file")
     if shutil.which("pyfasta") is not None:
         print('Splitting query fasta file into ' + arg_chunks + " chunks")
-        subprocess.call(['cp', arg_query, tempdir])
-        head, tail = os.path.split(arg_query)
-        querycopy = tempdir + "/" + tail
-        subprocess.call(['pyfasta', 'split', '-n', arg_chunks, querycopy], \
+        subprocess.call(['cp', file_in, file_out])
+        subprocess.call(['pyfasta', 'split', '-n', arg_chunks, file_out], \
         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        subprocess.call(['rm', querycopy])
+        subprocess.call(['rm', file_out])
         print('----------------------------------')
     else:
         print('Error: pyfasta must be installed. Do \'pip install pyfasta\'.')
@@ -203,31 +209,6 @@ def badblastn():
                     outfile.write(line)
     print('----------------------------------')
 
-def goodblastn():
-    extlen = len(arg_query.split('.', 1))
-    ext = arg_query.split('.', 1)[extlen-1]
-    fpath = tempdir + "/*." + ext
-    print("> Searching for query sequences in "+arg_goodblastdb)
-    flist = glob.glob(fpath)
-    chunk = 0
-    for i in flist:
-        if not os.stat(i).st_size == 0:
-            chunk = chunk + 1
-            chunkout = tempdir + "/blastn_chunk" + str(chunk) + ".out2"
-            print("Running blastn search of query chunk " + str(chunk)+" | "+str(datetime.datetime.now()))
-            blastdbpath = arg_blastdbdir+"/"+arg_goodblastdb
-            subprocess.call(['blastn', '-db', blastdbpath, '-query', i, '-out', chunkout, \
-            '-outfmt', '6 qseqid pident qcovs sseqid', '-num_threads', arg_threads, '-max_target_seqs', "1"],stderr=subprocess.DEVNULL)
-        else:
-            subprocess.call(['rm', i])
-    filenames = glob.glob(tempdir+"/*.out2")
-    with open(arg_outdir+"/blastn_"+arg_goodblastdb+"_output.tsv", 'w') as outfile:
-        for fname in filenames:
-            with open(fname) as infile:
-                for line in infile:
-                    outfile.write(line)
-    print('----------------------------------')
-
 def badsort():
     print("> Filtering accessions from query due to hits with "+arg_pident+" identity and "\
     +arg_qcovs+" coverage on sequences in "+arg_badblastdb+":")
@@ -247,6 +228,44 @@ def badsort():
     badseqout = pd.DataFrame({'badseqid' : badseqids, 'tophit' : tophit, 'reason' : ["in "+arg_badblastdb] * len(badseqids)})
     badseqout.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
     print('\n----------------------------------')
+    return badseqids
+
+def filter_fasta_badseqids(badseqids):
+    headers = []
+    with open(arg_query, "r") as f:
+        for record in SeqIO.parse(f, "fasta"):
+            headers.append(record.description)
+    goodseqids = set([x for x in headers if x not in badseqids])
+    print("> Saving temporary fasta file: of "+str(len(headers))+" query accession(s), "\
+    +str(len(badseqids))+" accession(s) filtered, "+str(len(goodseqids))+" accession(s) retained")
+    query_filtered = (r for r in SeqIO.parse(arg_query, "fasta") if r.id in goodseqids)
+    SeqIO.write(query_filtered,tempdir+"/"+fileout+"_nobadseqids.fasta","fasta")
+    print('\n----------------------------------')
+
+def goodblastn():
+    extlen = len(arg_query.split('.', 1))
+    ext = arg_query.split('.', 1)[extlen-1]
+    fpath = tempdir2 + "/*." + ext
+    print("> Searching for query sequences in "+arg_goodblastdb)
+    flist = glob.glob(fpath)
+    chunk = 0
+    for i in flist:
+        if not os.stat(i).st_size == 0:
+            chunk = chunk + 1
+            chunkout = tempdir2 + "/blastn_chunk" + str(chunk) + ".out2"
+            print("Running blastn search of query chunk " + str(chunk)+" | "+str(datetime.datetime.now()))
+            blastdbpath = arg_blastdbdir+"/"+arg_goodblastdb
+            subprocess.call(['blastn', '-db', blastdbpath, '-query', i, '-out', chunkout, \
+            '-outfmt', '6 qseqid pident qcovs sseqid', '-num_threads', arg_threads, '-max_target_seqs', "10"],stderr=subprocess.DEVNULL)
+        else:
+            subprocess.call(['rm', i])
+    filenames = glob.glob(tempdir2+"/*.out2")
+    with open(arg_outdir+"/blastn_"+arg_goodblastdb+"_output.tsv", 'w') as outfile:
+        for fname in filenames:
+            with open(fname) as infile:
+                for line in infile:
+                    outfile.write(line)
+    print('----------------------------------')
 
 def goodsort():
     print("> Filtering accessions from query due to hits with < "+arg_pident+" identity and < "\
@@ -258,14 +277,16 @@ def goodsort():
     with pd.read_csv(arg_outdir+"/blastn_"+arg_goodblastdb+"_output.tsv", sep='\t', header=None, chunksize=10000) as reader:
         for chunk in reader:
             chunk.columns = ['qseqid', 'pident', 'qcovs', 'sseqid']
-            qseqids = chunk.qseqid.unique()
+            qseqids = list(set(chunk.qseqid.unique()) - set(badseqids + goodseqids))
             for i in qseqids:
                 chunk_sub = chunk[chunk["qseqid"].isin([i])].reset_index(drop=True)
                 if (chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
                 (chunk_sub["qcovs"]>=float(arg_qcovs))].shape[0] > 0) or \
                 (chunk_sub.iloc[0]['qseqid']==chunk_sub.iloc[0]['sseqid']):
-                    goodseqids.append(i)
-                    goodtophit.append(chunk_sub.iloc[0]['sseqid'])
+                    goodseqids = goodseqids + list(chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
+                    (chunk_sub["qcovs"]>=float(arg_qcovs))]['qseqid'])
+                    goodtophit = goodtophit + list(chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
+                    (chunk_sub["qcovs"]>=float(arg_qcovs))]['sseqid'])
                 else:
                     badseqids.append(i)
                     badtophit.append(chunk_sub.iloc[0]['sseqid'])
@@ -284,10 +305,10 @@ def taxafilter():
     print("taxafilter.R is in "+scriptdir)
     subprocess.call(['Rscript', scriptdir+'/taxafilter.R', arg_taxadb+"/accessionTaxa.sql",\
     tempdir+"/"+fileout+"_badseqids.txt", tempdir+"/"+fileout+"_goodseqids.txt",\
-    arg_outdir, arg_filterlevel, fileout, arg_badblastdb, arg_goodblastdb])
+    arg_outdir, arg_filterlevel, fileout, arg_badblastdb, arg_goodblastdb, arg_addfilter])
     print('\n----------------------------------')
 
-def savefinalfasta():
+def filter_fasta_goodseqids():
     headers = []
     with open(arg_query, "r") as f:
         for record in SeqIO.parse(f, "fasta"):
@@ -302,12 +323,11 @@ def savefinalfasta():
     with open(arg_outdir+"/"+fileout+"_clean.fasta", "r") as f:
         for record in SeqIO.parse(f, "fasta"):
             newheaders.append(record.description)
-    cleantax = pd.read_csv(arg_outdir+"/"+fileout+"_clean.tax", sep='\t', header=None)
-    cleantax.rename(columns={0: 'qseqid', 1: 't1', 2: 't2', 3: 't3', 4: 't4'}, inplace=True)
-    cleantax['qseqidcat'] = pd.Categorical(cleantax['qseqid'], categories=newheaders, ordered=True)
+    cleantax = pd.read_csv(arg_outdir+"/"+fileout+"_clean.tax", header=None)
+    cleantax['qseqidcat'] = pd.Categorical(cleantax[1], categories=newheaders, ordered=True)
     cleantax.sort_values('qseqidcat', inplace=True)
     cleantax = cleantax.drop('qseqidcat', axis=1)
-    cleantax.to_csv(arg_outdir+"/"+fileout+"_clean.tax", sep='\t', header=None, index=None)
+    cleantax.to_csv(arg_outdir+"/"+fileout+"_clean.tax", header=None, index=None)
     print('\n----------------------------------')
 
 
@@ -317,6 +337,7 @@ def cleanup():
         subprocess.call(['rm', '-r', tempdir])
     else:
         subprocess.call(['rm', tempdir+"/"+fileout+"_goodseqids.txt"])
+        subprocess.call(['rm', '-r', tempdir2])
 
 
 if __name__ == "__main__":
@@ -324,6 +345,7 @@ if __name__ == "__main__":
     myfunc(sys.argv)
 
     global tempdir
+    global tempdir2
     global fileout
     head, tail = os.path.split(arg_query)
     fileout = tail.split('.', 1)[0]
@@ -336,19 +358,21 @@ if __name__ == "__main__":
         print('Creating temporary directory at: ' + tempdir)
         os.makedirs(tempdir)
         print('----------------------------------')
-
         check_badblastdb()
         check_goodblastdb()
-        split_fasta()
-
-    if arg_sortonly=="F":
+        split_fasta(arg_query,tempdir+"/"+fileout+".fasta")
         badblastn()
-    badsort()
+
+    badseqids = badsort()
+    filter_fasta_badseqids(badseqids)
+    tempdir2 = tempdir + "/" + "temp_" + str(time.time()).split('.', 1)[0]
+    os.makedirs(tempdir2)
 
     if arg_sortonly=="F":
+        split_fasta(tempdir+"/"+fileout+"_nobadseqids.fasta",tempdir2+"/"+fileout+"_nobadseqids.fasta")
         goodblastn()
     goodsort()
 
     taxafilter()
-    savefinalfasta()
+    filter_fasta_goodseqids()
     cleanup()
