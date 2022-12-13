@@ -8,8 +8,10 @@ if(args[[1]]=="NONE"){
 }
 
 
-# Check through badseqids, recover qseqids where sseqid is same filterlevel
-badseqids_df <- read.table(args[[2]],sep="\t",header=T)
+# Check through badseqids
+badseqids_all <- read.table(args[[2]],sep="\t",header=T)
+badseqids_df <- badseqids_all[grep(args[[8]],badseqids_all$reason),]
+badseqids_confirmed <- badseqids_all[grepl(args[[7]], badseqids_all$reason),"badseqid"]
 
 badseqids_query <- badseqids_df$badseqid
 badQ_taxaId <- accessionToTaxa(badseqids_query,args[[1]])
@@ -25,36 +27,31 @@ badS_taxonomy$taxaID <- row.names(badS_taxonomy)
 row.names(badS_taxonomy) <- NULL
 badS_taxonomy$sseqid <- badseqids_subject
 
-badseqids_confirmed <- badseqids_df[grepl(args[[7]], badseqids_df$reason),"badseqid"]
-badseqids_check <- badseqids_df[grepl(args[[8]], badseqids_df$reason),"badseqid"]
-badQ_taxonomy_check <- badQ_taxonomy[badQ_taxonomy$qseqid%in%badseqids_check,]
-
+## recover qseqids where sseqid is same filterlevel
 newgoodids <- list()
-for(i in 1:length(badQ_taxonomy_check$qseqid)){
+for(i in 1:length(badQ_taxonomy$qseqid)){
   c <- T
   x <- badQ_taxonomy[i,args[[5]]]
   if(is.na(x)){c <- F}
   y <- badS_taxonomy[i,args[[5]]]
   if(is.na(y)){c <- F}
   if((x==y)&(c==T)){
-    newgoodids <- append(newgoodids, badQ_taxonomy_check$qseqid[i])
+    newgoodids <- append(newgoodids, badQ_taxonomy$qseqid[i])
   }
 }
 newgoodids <- unlist(newgoodids)
-print(paste(">>> ",paste(length(newgoodids),
-                         paste(" flagged accession(s) were correct ",args[[5]],sep=""),
-                         sep="")),sep="")
-
+print(paste0(">>> ",paste0(length(newgoodids),
+                         paste0(" flagged accession(s) were correct ",args[[5]]))))
 goodseqids_df <- read.table(args[[3]],sep="\t",header=T)
 newgoodids_df <- badseqids_df[badseqids_df$badseqid%in%newgoodids,]
-newgoodids_df <- newgoodids_df[!newgoodids_df$badseqid%in%badseqids_confirmed,]
 newgoodids_df$reason <- NULL
 names(newgoodids_df) <- names(goodseqids_df)
-badseqids_df <- badseqids_df[!badseqids_df$badseqid%in%newgoodids_df$goodseqid,]
+badseqids_df <- badseqids_all[!badseqids_all$badseqid%in%newgoodids_df$goodseqid,]
 goodseqids_df <- rbind(goodseqids_df,newgoodids_df)
+row.names(goodseqids_df) <- NULL
 
 
-# Check through goodseqids, remove qseqids where sseqid is not same filterlevel
+# Check through goodseqids
 goodseqids_query <- goodseqids_df$goodseqid
 goodQ_taxaId <- accessionToTaxa(goodseqids_query,args[[1]])
 goodQ_taxonomy <- data.frame(getTaxonomy(goodQ_taxaId,args[[1]]))
@@ -69,21 +66,51 @@ goodS_taxonomy$taxaID <- row.names(goodS_taxonomy)
 row.names(goodS_taxonomy) <- NULL
 goodS_taxonomy$sseqid <- goodseqids_subject
 
-newbadids <- list()
-for(i in 1:length(goodQ_taxonomy$qseqid)){
-  c <- F
-  x <- goodQ_taxonomy[i,args[[5]]]
-  if(is.na(x)){c <- T}
-  y <- goodS_taxonomy[i,args[[5]]]
-  if(is.na(y)){c <- T}
-  if((x!=y)||(c==T)){
-    newbadids <- append(newbadids, goodQ_taxonomy$qseqid[i])
+## Remove qseqids with any hits against arg_addfilter
+if(!args[[9]]=="NONE"){
+  newbadids <- list()
+  aflevel <- strsplit(args[[9]],",")[[1]][1]
+  af <- strsplit(args[[9]],",")[[1]][2]
+  q <- unique(goodQ_taxonomy$qseqid)
+  for(i in 1:length(q)){
+    x <- goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],aflevel]
+    if(any(!x%in%af)){
+      newbadids <- append(newbadids, q[i])
+    }
   }
+  newbadids <- unlist(newbadids)
+  print(paste0(">>> ",paste0(length(newbadids),
+                           paste0(" accession(s) filtered for wrong ",args[[9]]))))
+
+ if(length(newbadids)>0){
+   newbadout <- goodseqids_df[goodseqids_df$goodseqid%in%newbadids,]
+   newbadout$reason <- rep.int(paste("Wrong",aflevel,sep=" "),length(newbadids))
+   names(newbadout) <- names(badseqids_df)
+   badseqids_df <- rbind(badseqids_df,newbadout)
+   write.table(badseqids_df,args[[2]],sep="\t",row.names=F,quote=F)
+   goodseqids_df <- goodseqids_df[!goodseqids_df$goodseqid%in%badseqids_df$badseqid,]
+   row.names(goodseqids_df) <- NULL
+ }
+}
+
+## remove qseqids where sseqid is not same filterlevel
+newbadids <- list()
+q <- unique(goodQ_taxonomy$qseqid)
+for(i in 1:length(q)){
+  c <- F
+  x <- goodQ_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]]
+  x[is.na(x)] <- "FILTER"
+  y <- unique(goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]])
+  y[is.na(y)] <- "FILTER"
+  if(length(y)>1){c <- T}else{
+    if(!y%in%x){c <- T}
+    if(y=="FILTER"){c <- T}
+    }
+  if(c==T){newbadids <- append(newbadids, q[i])}
 }
 newbadids <- unlist(newbadids)
-print(paste(">>> ",paste(length(newbadids)+length(badseqids_df$badseqid),
-                         " total accession(s) filtered",sep="")),sep="")
-
+print(paste0(">>> ",paste0(length(newbadids),
+                           paste0(" accession(s) filtered for wrong ",args[[5]]))))
 if(length(newbadids)>0){
   newbadout <- goodseqids_df[goodseqids_df$goodseqid%in%newbadids,]
   newbadout$reason <- rep.int(paste("Wrong",args[[5]],sep=" "),length(newbadids))
@@ -91,33 +118,48 @@ if(length(newbadids)>0){
   badseqids_df <- rbind(badseqids_df,newbadout)
   write.table(badseqids_df,args[[2]],sep="\t",row.names=F,quote=F)
 }
-
 goodseqids_df <- goodseqids_df[!goodseqids_df$goodseqid%in%badseqids_df$badseqid,]
 row.names(goodseqids_df) <- NULL
 
 
 # Save files
-goodtax_out <- goodQ_taxonomy[,c(9,4,5,6,7)]
-goodtax_out$species <- gsub(" ", "_", goodtax_out$species)
-goodtax_out <- goodtax_out[goodtax_out$qseqid%in%goodseqids_df$goodseqid,]
-write.table(goodtax_out,paste(args[[4]],paste(args[[6]],"_clean.tax",sep=""),sep="/"),
-            sep="\t",col.names=F,row.names=F,quote=F)
+## Cleaned tax
+goodtax_out <- goodQ_taxonomy[,9]
+goodtax_out <- unique(goodtax_out)
+taxaId <- accessionToTaxa(goodtax_out,args[[1]])
+taxonomy <- getTaxonomy(taxaId,args[[1]])
+Final.df <- cbind(taxaId ,goodtax_out, taxaId, taxonomy)
+write.table(Final.df,paste(args[[4]],paste0(args[[6]],"_clean.tax"),sep="/"),
+            row.names=F,col.names=F,sep=",")
 
-badQ_taxonomy <- rbind(badQ_taxonomy,goodQ_taxonomy[goodQ_taxonomy$qseqid%in%badseqids_df$badseqid,])
+## badseqids
+badseqids_df <- badseqids_df[!duplicated(badseqids_df),]
+
+badseqids_query <- badseqids_df$badseqid
+badQ_taxaId <- accessionToTaxa(badseqids_query,args[[1]])
+badQ_taxonomy <- data.frame(getTaxonomy(badQ_taxaId,args[[1]]))
+badQ_taxonomy$taxaID <- row.names(badQ_taxonomy)
+row.names(badQ_taxonomy) <- NULL
+badQ_taxonomy$qseqid <- badseqids_query
 badQ_taxonomy$queryTaxa <- paste(badQ_taxonomy$superkingdom,
-                             badQ_taxonomy$phylum,
-                             badQ_taxonomy$class,
-                             badQ_taxonomy$order,
-                             badQ_taxonomy$family,
-                             badQ_taxonomy$genus,
-                             badQ_taxonomy$species,sep="|")
+                                 badQ_taxonomy$phylum,
+                                 badQ_taxonomy$class,
+                                 badQ_taxonomy$order,
+                                 badQ_taxonomy$family,
+                                 badQ_taxonomy$genus,
+                                 badQ_taxonomy$species,sep="|")
 badQ_taxonomy$queryTaxa <- gsub(" ", "_", badQ_taxonomy$queryTaxa)
 badQ_merge <- badQ_taxonomy[,c("qseqid","queryTaxa")]
 names(badQ_merge) <- c("badseqid","queryTaxa")
-badseqids_df <- merge(x=badseqids_df,y=badQ_merge, 
-                       by="badseqid", all.x=TRUE)
+badseqids_df <- merge(x=badseqids_df,y=badQ_merge,
+                      by="badseqid", all.x=TRUE)
 
-badS_taxonomy <- rbind(badS_taxonomy,goodS_taxonomy[goodS_taxonomy$sseqid%in%badseqids_df$tophit,])
+badseqids_subject <- badseqids_df$tophit
+badS_taxaId <- accessionToTaxa(badseqids_subject,args[[1]])
+badS_taxonomy <- data.frame(getTaxonomy(badS_taxaId,args[[1]]))
+badS_taxonomy$taxaID <- row.names(badS_taxonomy)
+row.names(badS_taxonomy) <- NULL
+badS_taxonomy$sseqid <- badseqids_subject
 badS_taxonomy$subjectTaxa <- paste(badS_taxonomy$superkingdom,
                                    badS_taxonomy$phylum,
                                    badS_taxonomy$class,
@@ -128,9 +170,10 @@ badS_taxonomy$subjectTaxa <- paste(badS_taxonomy$superkingdom,
 badS_taxonomy$subjectTaxa <- gsub(" ", "_", badS_taxonomy$subjectTaxa)
 badS_merge <- badS_taxonomy[,c("sseqid","subjectTaxa")]
 names(badS_merge) <- c("tophit","subjectTaxa")
-badseqids_df <- merge(x=badseqids_df,y=badS_merge, 
+badseqids_df <- merge(x=badseqids_df,y=badS_merge,
                        by="tophit", all.x=TRUE)
 badseqids_df <- badseqids_df[!duplicated(badseqids_df),]
 
 badseqids_df <- badseqids_df[,c("badseqid","queryTaxa","tophit","subjectTaxa","reason")]
+badseqids_df <- badseqids_df[order(badseqids_df$badseqid),]
 write.table(badseqids_df,args[[2]],sep="\t",col.names=T,row.names=F,quote=F)
