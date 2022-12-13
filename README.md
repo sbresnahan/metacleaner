@@ -55,5 +55,6 @@ python3 metacleaner.py --query /path/to/query.fasta --outdir /path/to/output_dir
 -d, --taxadb <(required unless constructing from scratch) path to directory containing accessionTaxa.sql file for taxonomizr>    
 -c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>   
 -t, --threads <(default=1) number of threads for blastn>  
--w, --addfilter <Additional filter level, one of taxa levels as in -l (--filterlevel) and filter value, separated by a comma (e.g., class,Magnoliopsida); hits at pident and qcovs with taxa info other than that set in addfilter will be removed>
+-w, --addfilter <Additional filter level, one of taxa levels as in -l (--filterlevel) and filter value, separated by a comma (e.g., class,Magnoliopsida);
+hits at pident and qcovs with taxa info other than that set in addfilter will be removed>
 ```
