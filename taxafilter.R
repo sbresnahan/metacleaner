@@ -72,19 +72,21 @@ if(!args[[9]]=="NONE"){
   aflevel <- strsplit(args[[9]],",")[[1]][1]
   af <- strsplit(args[[9]],",")[[1]][2]
   q <- unique(goodQ_taxonomy$qseqid)
+  
   for(i in 1:length(q)){
     x <- goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],aflevel]
     if(any(!x%in%af)){
       newbadids <- append(newbadids, q[i])
     }
   }
+  
   newbadids <- unlist(newbadids)
   print(paste0(">>> ",paste0(length(newbadids),
                            paste0(" accession(s) filtered for wrong ",args[[9]]))))
 
  if(length(newbadids)>0){
    newbadout <- goodseqids_df[goodseqids_df$goodseqid%in%newbadids,]
-   newbadout$reason <- rep.int(paste("Wrong",aflevel,sep=" "),length(newbadids))
+   newbadout$reason <- rep.int(paste("Wrong",aflevel,sep=" "),length(newbadout$goodseqid))
    names(newbadout) <- names(badseqids_df)
    badseqids_df <- rbind(badseqids_df,newbadout)
    write.table(badseqids_df,args[[2]],sep="\t",row.names=F,quote=F)
@@ -113,7 +115,7 @@ print(paste0(">>> ",paste0(length(newbadids),
                            paste0(" accession(s) filtered for wrong ",args[[5]]))))
 if(length(newbadids)>0){
   newbadout <- goodseqids_df[goodseqids_df$goodseqid%in%newbadids,]
-  newbadout$reason <- rep.int(paste("Wrong",args[[5]],sep=" "),length(newbadids))
+  newbadout$reason <- rep.int(paste("Wrong",args[[5]],sep=" "),length(newbadout$goodseqid))
   names(newbadout) <- names(badseqids_df)
   badseqids_df <- rbind(badseqids_df,newbadout)
   write.table(badseqids_df,args[[2]],sep="\t",row.names=F,quote=F)
@@ -124,8 +126,7 @@ row.names(goodseqids_df) <- NULL
 
 # Save files
 ## Cleaned tax
-goodtax_out <- goodQ_taxonomy[,9]
-goodtax_out <- unique(goodtax_out)
+goodtax_out <- unique(goodseqids_df$goodseqid)
 taxaId <- accessionToTaxa(goodtax_out,args[[1]])
 taxonomy <- getTaxonomy(taxaId,args[[1]])
 Final.df <- cbind(taxaId ,goodtax_out, taxaId, taxonomy)
@@ -134,7 +135,6 @@ write.table(Final.df,paste(args[[4]],paste0(args[[6]],"_clean.tax"),sep="/"),
 
 ## badseqids
 badseqids_df <- badseqids_df[!duplicated(badseqids_df),]
-
 badseqids_query <- badseqids_df$badseqid
 badQ_taxaId <- accessionToTaxa(badseqids_query,args[[1]])
 badQ_taxonomy <- data.frame(getTaxonomy(badQ_taxaId,args[[1]]))
