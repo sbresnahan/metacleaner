@@ -60,7 +60,7 @@ def myfunc(argv):
     \n-c, --chunks <(default=100) number of chunks to split query file into (higher values may increase speed for larger query files)>\
     \n-t, --threads <(default=1) number of threads for blastn>\
     \n-w, --addfilter <Additional filter level, one of taxa levels as in -l (--filterlevel) and filter value, separated by a comma;\
-    \n Hits at pident and qcovs with taxa info other than in addfilter will be removed.>".format(argv[0])
+    \n hits at pident and qcovs with taxa info other than in addfilter will be removed>".format(argv[0])
 
     try:
         opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:s:l:d:w:", ["help", "query=", "blastdbdir=", "badblastdb=", \
@@ -134,7 +134,6 @@ def check_badblastdb():
     fname = arg_blastdbdir + "/" + arg_badblastdb + ".nhd"
     if os.path.isfile(fname):
         print(arg_badblastdb + " exists in directory specified by -b")
-        print('----------------------------------')
     else:
         if shutil.which("makeblastdb") is not None:
             badblastdb = arg_blastdbdir + "/" + arg_badblastdb
@@ -142,7 +141,6 @@ def check_badblastdb():
                 print("badblastdb "+ arg_badblastdb + " does not exist in directory specified by -b. Attempting to construct:")
                 subprocess.call(['makeblastdb', '-in', arg_badblastdbinput, '-out', badblastdb, '-dbtype',\
                 'nucl', '-hash_index'])
-                print('----------------------------------')
             else:
                 print("badblastdb " + arg_badblastdb + " does not exist in directory specified by -b, but fasta file specified by -f does not exist.")
                 sys.exit(2)
@@ -154,7 +152,6 @@ def check_goodblastdb():
     fname = arg_blastdbdir + "/" + arg_goodblastdb + ".nhd"
     if os.path.isfile(fname):
         print(arg_goodblastdb + " exists in directory specified by -b")
-        print('----------------------------------')
     else:
         if shutil.which("makeblastdb") is not None:
             goodblastdb = arg_blastdbdir + "/" + arg_goodblastdb
@@ -162,7 +159,6 @@ def check_goodblastdb():
                 print("goodblastdb "+ arg_goodblastdb + " does not exist in directory specified by -b. Attempting to construct:")
                 subprocess.call(['makeblastdb', '-in', arg_goodblastdbinput, '-out', goodblastdb, '-dbtype', \
                 'nucl', '-hash_index'])
-                print('\n----------------------------------')
             else:
                 print("goodblastdb " + arg_goodblastdb + " does not exist in directory specified by -b, but fasta file specified by -f does not exist.")
                 sys.exit(2)
@@ -178,7 +174,6 @@ def split_fasta(file_in,file_out):
         subprocess.call(['pyfasta', 'split', '-n', arg_chunks, file_out], \
         stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         subprocess.call(['rm', file_out])
-        print('----------------------------------')
     else:
         print('Error: pyfasta must be installed. Do \'pip install pyfasta\'.')
         sys.exit(2)
@@ -206,7 +201,6 @@ def badblastn():
             with open(fname) as infile:
                 for line in infile:
                     outfile.write(line)
-    print('----------------------------------')
 
 def badsort():
     print("> Filtering accessions from query due to hits with "+arg_pident+" identity and "\
@@ -226,7 +220,6 @@ def badsort():
     print(">>> "+str(len(badseqids))+" accession(s) filtered")
     badseqout = pd.DataFrame({'badseqid' : badseqids, 'tophit' : tophit, 'reason' : ["in "+arg_badblastdb] * len(badseqids)})
     badseqout.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
-    print('\n----------------------------------')
     return badseqids
 
 def filter_fasta_badseqids(badseqids):
@@ -239,7 +232,6 @@ def filter_fasta_badseqids(badseqids):
     +str(len(badseqids))+" accession(s) filtered, "+str(len(goodseqids))+" accession(s) retained")
     query_filtered = (r for r in SeqIO.parse(arg_query, "fasta") if r.id in goodseqids)
     SeqIO.write(query_filtered,tempdir+"/"+fileout+"_nobadseqids.fasta","fasta")
-    print('\n----------------------------------')
 
 def goodblastn():
     extlen = len(arg_query.split('.', 1))
@@ -264,7 +256,6 @@ def goodblastn():
             with open(fname) as infile:
                 for line in infile:
                     outfile.write(line)
-    print('----------------------------------')
 
 def goodsort():
     print("> Filtering accessions from query due to hits with < "+arg_pident+" identity and < "\
@@ -296,7 +287,6 @@ def goodsort():
     newbadseqids = pd.concat([oldbadseqids,badseqout])
     newbadseqids.to_csv(tempdir+"/"+fileout+"_badseqids.txt", sep='\t', header=True, index=False)
     goodseqout.to_csv(tempdir+"/"+fileout+"_goodseqids.txt", sep='\t', header=True, index=False)
-    print('\n----------------------------------')
 
 def taxafilter():
     scriptdir = os.path.realpath(os.path.dirname(__file__))
@@ -305,7 +295,6 @@ def taxafilter():
     subprocess.call(['Rscript', scriptdir+'/taxafilter.R', arg_taxadb+"/accessionTaxa.sql",\
     tempdir+"/"+fileout+"_badseqids.txt", tempdir+"/"+fileout+"_goodseqids.txt",\
     arg_outdir, arg_filterlevel, fileout, arg_badblastdb, arg_goodblastdb, arg_addfilter])
-    print('\n----------------------------------')
 
 def filter_fasta_goodseqids():
     headers = []
@@ -327,7 +316,6 @@ def filter_fasta_goodseqids():
     cleantax.sort_values('qseqidcat', inplace=True)
     cleantax = cleantax.drop('qseqidcat', axis=1)
     cleantax.to_csv(arg_outdir+"/"+fileout+"_clean.tax", header=None, index=None)
-    print('\n----------------------------------')
 
 
 def cleanup():
@@ -356,7 +344,6 @@ if __name__ == "__main__":
         tempdir = arg_outdir + "/" + "temp_" + str(time.time()).split('.', 1)[0]
         print('Creating temporary directory at: ' + tempdir)
         os.makedirs(tempdir)
-        print('----------------------------------')
         check_badblastdb()
         check_goodblastdb()
         split_fasta(arg_query,tempdir+"/"+fileout+".fasta")
