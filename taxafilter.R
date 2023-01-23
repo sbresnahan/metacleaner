@@ -98,16 +98,30 @@ if(!args[[9]]=="NONE"){
 ## remove qseqids where sseqid is not same filterlevel
 newbadids <- list()
 q <- unique(goodQ_taxonomy$qseqid)
+reason <- list()
 for(i in 1:length(q)){
   c <- F
   x <- goodQ_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]]
+  if(any(is.na(x))){
+    c <- T
+    reason[i] <- "No taxa info for query"
+  }
   x[is.na(x)] <- "FILTER"
   y <- unique(goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]])
   y[is.na(y)] <- "FILTER"
-  if(length(y)>1){c <- T}else{
-    if(!y%in%x){c <- T}
-    if(y=="FILTER"){c <- T}
+  if(length(y)>1){
+    c <- T
+    reason[i] <- "Matches to multiple genera"
+  }else{
+    if(!y%in%x){
+      c <- T
+      reason[i] <- "Match to wrong genera"
     }
+    if(y=="FILTER"){
+      c <- T
+      reason[i] <- "No taxa info for subject"
+    }
+  }
   if(c==T){newbadids <- append(newbadids, q[i])}
 }
 newbadids <- unlist(newbadids)
@@ -115,7 +129,7 @@ print(paste0(">>> ",paste0(length(newbadids),
                            paste0(" accession(s) filtered for wrong ",args[[5]]))))
 if(length(newbadids)>0){
   newbadout <- goodseqids_df[goodseqids_df$goodseqid%in%newbadids,]
-  newbadout$reason <- rep.int(paste("Wrong",args[[5]],sep=" "),length(newbadout$goodseqid))
+  newbadout$reason <- unlist(reason)
   names(newbadout) <- names(badseqids_df)
   badseqids_df <- rbind(badseqids_df,newbadout)
   write.table(badseqids_df,args[[2]],sep="\t",row.names=F,quote=F)
