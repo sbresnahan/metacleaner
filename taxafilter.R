@@ -106,10 +106,9 @@ for(i in 1:length(q)){
     c <- T
     reason <- append(reason,rep.int("No taxa info for query",length(x)))
   }
-  x[is.na(x)] <- "FILTER"
-  y <- unique(goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]])
-  y[is.na(y)] <- "FILTER"
   if(c==F){
+    y <- unique(goodS_taxonomy[goodQ_taxonomy$qseqid==q[i],args[[5]]])
+    y[is.na(y)] <- "FILTER"
     if(length(y)>1){
       c <- T
       reason <- append(reason,rep.int("Matches to multiple genera",length(x)))
@@ -117,11 +116,6 @@ for(i in 1:length(q)){
       if(!y%in%x){
         c <- T
         reason <- append(reason,rep.int("Match to wrong genera",length(x)))
-      }else{
-        if(y=="FILTER"){
-          c <- T
-          reason <- append(reason,rep.int("No taxa info for subject",length(x)))
-        }
       }
     }
   }
