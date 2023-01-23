@@ -98,6 +98,7 @@ if(!args[[9]]=="NONE"){
 ## remove qseqids where sseqid is not same filterlevel
 newbadids <- list()
 q <- unique(goodQ_taxonomy$qseqid)
+q <- q[q%in%goodseqids_df$goodseqid]
 reason <- list()
 for(i in 1:length(q)){
   addlen <- length(goodseqids_df[goodseqids_df$goodseqid%in%q[i],"goodseqid"])
