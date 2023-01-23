@@ -63,7 +63,7 @@ def myfunc(argv):
     \n hits at pident and qcovs with taxa info other than in addfilter will be removed>".format(argv[0])
 
     try:
-        opts, args = getopt.getopt(argv[1:], "hq:b:x:y:f:g:o:c:e:v:t:s:l:d:w:", ["help", "query=", "blastdbdir=", "badblastdb=", \
+        opts, args = getopt.getopt(argv[1:], "hq:q:b:x:y:f:g:o:c:e:v:t:s:l:d:w:", ["help", "query=", "blastdbdir=", "badblastdb=", \
         "goodblastdb=", "badblastdbinput=", "goodblastdbinput=", "outdir=", "chunks=", "pident=", \
         "qcovs=", "threads=", "sortonly=", "filterlevel==","taxadb==","addfilter=="])
     except:
