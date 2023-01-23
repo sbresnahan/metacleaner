@@ -140,7 +140,7 @@ row.names(goodseqids_df) <- NULL
 goodtax_out <- unique(goodseqids_df$goodseqid)
 taxaId <- accessionToTaxa(goodtax_out,args[[1]])
 taxonomy <- getTaxonomy(taxaId,args[[1]])
-Final.df <- cbind(taxaId ,goodtax_out, taxaId, taxonomy)
+Final.df <- cbind(as.character(taxaId), goodtax_out, as.character(taxaId), taxonomy)
 write.table(Final.df,paste(args[[4]],paste0(args[[6]],"_clean.tax"),sep="/"),
             row.names=F,col.names=F,sep=",")
 
