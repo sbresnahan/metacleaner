@@ -270,9 +270,8 @@ def goodsort():
             qseqids = list(set(chunk.qseqid.unique()) - set(badseqids + goodseqids))
             for i in qseqids:
                 chunk_sub = chunk[chunk["qseqid"].isin([i])].reset_index(drop=True)
-                if (chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
-                (chunk_sub["qcovs"]>=float(arg_qcovs))].shape[0] > 0) or \
-                (chunk_sub.iloc[0]['qseqid']==chunk_sub.iloc[0]['sseqid']):
+                if chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
+                (chunk_sub["qcovs"]>=float(arg_qcovs))].shape[0] > 0:
                     goodseqids = goodseqids + list(chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
                     (chunk_sub["qcovs"]>=float(arg_qcovs))]['qseqid'])
                     goodtophit = goodtophit + list(chunk_sub[(chunk_sub['pident']>=float(arg_pident)) & \
