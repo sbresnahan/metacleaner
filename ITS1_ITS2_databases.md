@@ -7,6 +7,11 @@ Downloaded list of sequence accessions from NCBI:
 
 Retrieved fasta sequences using [reutils](https://cran.r-project.org/web/packages/reutils/index.html) in R:
 ```
+# Ensure working directory path is set, and there is a subdirectory called "fasta" here
+wd <- setwd("working/directory/path")
+dir.create(file.path(wd, "fasta"), showWarnings = FALSE)
+
+# Download fasta sequences in chunks of 5000 and write to individual file for each chunk
 library(reutils)
 accessions <- read.table("nonplant_accessions.seq.txt",sep="\t",header=F)[,c(1)]
 chunks <- split(accessions,cut(seq_along(accessions),5000,labels = FALSE))
@@ -44,6 +49,11 @@ Downloaded list of sequence accessions from NCBI:
 
 Retrieved fasta sequences using [reutils](https://cran.r-project.org/web/packages/reutils/index.html) in R:
 ```
+# Ensure working directory path is set, and there is a subdirectory called "fasta" here
+wd <- setwd("working/directory/path")
+dir.create(file.path(wd, "fasta"), showWarnings = FALSE)
+
+# Download fasta sequences in chunks of 5000 and write to individual file for each chunk
 library(reutils)
 accessions <- read.table("plant_accessions.seq.txt",sep="\t",header=F)[,c(1)]
 chunks <- split(accessions,cut(seq_along(accessions),5000,labels = FALSE))
