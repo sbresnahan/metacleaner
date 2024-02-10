@@ -60,3 +60,7 @@ python3 metacleaner.py --query /path/to/query.fasta --outdir /path/to/output_dir
 -w, --addfilter <Additional filter level, one of taxa levels as in -l (--filterlevel) and filter value, separated by a comma (e.g., class,Magnoliopsida);
 hits at pident and qcovs with taxa info other than that set in addfilter will be removed>
 ```
+
+If you use metacleaner in your research, please cite:
+
+Crone, M., Boyle, N., Bresnahan, S.T., Biddinger, D., Grozinger, C.M. (2023). More than mesolectic: Characterizing the nutritional niche of Osmia cornifrons. Ecology and Evolution 13, e10640. [https://doi.org/10.1002/ece3.10640](https://doi.org/10.1002/ece3.10640)
