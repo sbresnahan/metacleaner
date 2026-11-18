@@ -66,14 +66,14 @@ res <- clean_reference(ex("query.fasta"), ex("reference.fasta"),
                        ex("contaminants.fasta"), taxonomy = ex("taxonomy.tax"),
                        verbose = FALSE)
 files <- write_results(res, outdir = tempdir(), prefix = "example")
-#> Results written to /tmp/Rtmpy15j3I:
+#> Results written to /tmp/Rtmp0giIis:
 #>   example_clean.fasta
 #>   example_clean.tax
 #>   example_flagged.tsv
 #>   example_summary.txt
 files
 #>                                 fasta                              taxonomy 
-#> "/tmp/Rtmpy15j3I/example_clean.fasta"   "/tmp/Rtmpy15j3I/example_clean.tax" 
+#> "/tmp/Rtmp0giIis/example_clean.fasta"   "/tmp/Rtmp0giIis/example_clean.tax" 
 #>                               flagged                               summary 
-#> "/tmp/Rtmpy15j3I/example_flagged.tsv" "/tmp/Rtmpy15j3I/example_summary.txt" 
+#> "/tmp/Rtmp0giIis/example_flagged.tsv" "/tmp/Rtmp0giIis/example_summary.txt" 
 ```

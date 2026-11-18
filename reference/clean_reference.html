@@ -5,7 +5,7 @@ example a plant ITS2 database built from NCBI GenBank records). For each
 query sequence it:"><meta property="og:description" content="The main metacleaner function. It removes sequences that are probably
 mislabeled or contaminants from a DNA barcode reference database (for
 example a plant ITS2 database built from NCBI GenBank records). For each
-query sequence it:"><meta property="og:image" content="https://seantbresnahan.com/metacleaner/reference/figures/social-preview.png"><meta property="og:image:alt" content="metacleaner: automated curation of barcode sequence databases for metabarcoding and metagenomics"></head><body>
+query sequence it:"><meta property="og:image" content="https://sbresnahan.github.io/metacleaner/reference/figures/social-preview.png"><meta property="og:image:alt" content="metacleaner: automated curation of barcode sequence databases for metabarcoding and metagenomics"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -39,7 +39,7 @@ query sequence it:"><meta property="og:image" content="https://seantbresnahan.co
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Clean a barcode reference database</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sbresnahan/metacleaner/blob/main/R/clean_reference.R" class="external-link"><code>R/clean_reference.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sbresnahan/metacleaner/blob/v2.0.0/R/clean_reference.R" class="external-link"><code>R/clean_reference.R</code></a></small>
       <div class="d-none name"><code>clean_reference.Rd</code></div>
     </div>
 
@@ -276,7 +276,7 @@ The full decision rules are listed in [classify_queries()].</p>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># save the cleaned database and the report</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="write_results.html">write_results</a></span><span class="op">(</span><span class="va">res</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, prefix <span class="op">=</span> <span class="st">"example"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Results written to /tmp/Rtmpy15j3I:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Results written to /tmp/Rtmp0giIis:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   example_clean.fasta</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   example_clean.tax</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   example_flagged.tsv</span>

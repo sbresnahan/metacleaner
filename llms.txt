@@ -22,27 +22,12 @@ command-line tools.
 
 ## Installation
 
-Install from CRAN:
-
 ``` r
 
-install.packages("metacleaner", dependencies = TRUE)
+install.packages("metacleaner", dependencies = TRUE)   # from CRAN
+# development version:
+# install.packages("remotes"); remotes::install_github("sbresnahan/metacleaner")
 ```
-
-If R reports that package ‘metacleaner’ is not available, it is still
-under review at CRAN. Install it from GitHub instead:
-
-``` r
-
-install.packages("remotes")
-remotes::install_github("sbresnahan/metacleaner", dependencies = TRUE)
-```
-
-Installing from GitHub compiles the package on your computer, so it
-needs build tools:
-[Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows, or
-the Xcode command line tools on macOS (run `xcode-select --install` in
-Terminal). Most Linux systems already have them.
 
 ## Quick start
 
@@ -84,17 +69,17 @@ build_reference_db('((((ITS1) OR 5.8S) OR 28S) OR ITS2) NOT Embryophyta[Organism
 ## Documentation
 
 Full documentation, including all help pages and guides, is on the
-package website: <https://seantbresnahan.com/metacleaner/>.
+package website: <https://sbresnahan.github.io/metacleaner/>.
 
-- [`vignette("metacleaner")`](https://seantbresnahan.com/metacleaner/articles/metacleaner.md):
+- [`vignette("metacleaner")`](https://sbresnahan.github.io/metacleaner/articles/metacleaner.md):
   step-by-step guide, explanation of the settings and outputs, and how
   the old command-line options map onto the R arguments.
-- [`vignette("building-databases")`](https://seantbresnahan.com/metacleaner/articles/building-databases.md):
+- [`vignette("building-databases")`](https://sbresnahan.github.io/metacleaner/articles/building-databases.md):
   downloading reference and contaminant databases from NCBI.
-- [`?clean_reference`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md),
-  [`?classify_queries`](https://seantbresnahan.com/metacleaner/reference/classify_queries.md)
+- [`?clean_reference`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md),
+  [`?classify_queries`](https://sbresnahan.github.io/metacleaner/reference/classify_queries.md)
   (exact decision rules) and
-  [`?search_sequences`](https://seantbresnahan.com/metacleaner/reference/search_sequences.md)
+  [`?search_sequences`](https://sbresnahan.github.io/metacleaner/reference/search_sequences.md)
   (search engine details).
 
 ## Output
@@ -122,18 +107,18 @@ Crone, M., Boyle, N., Bresnahan, S.T., Biddinger, D., Grozinger, C.M.
 The two functions most users need: run the whole workflow, then save the
 cleaned FASTA, taxonomy, list of removed sequences and summary.
 
-- [`clean_reference()`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md)
+- [`clean_reference()`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md)
   : Clean a barcode reference database
-- [`write_results()`](https://seantbresnahan.com/metacleaner/reference/write_results.md)
+- [`write_results()`](https://sbresnahan.github.io/metacleaner/reference/write_results.md)
   : Save metacleaner results to files
 
 ## Build reference and contaminant databases
 
 Download sequences from NCBI GenBank inside R.
 
-- [`build_reference_db()`](https://seantbresnahan.com/metacleaner/reference/build_reference_db.md)
+- [`build_reference_db()`](https://sbresnahan.github.io/metacleaner/reference/build_reference_db.md)
   : Build a reference (or contaminant) database from NCBI
-- [`download_ncbi_sequences()`](https://seantbresnahan.com/metacleaner/reference/download_ncbi_sequences.md)
+- [`download_ncbi_sequences()`](https://sbresnahan.github.io/metacleaner/reference/download_ncbi_sequences.md)
   : Download sequences from NCBI GenBank
 
 ## Taxonomy
@@ -141,13 +126,13 @@ Download sequences from NCBI GenBank inside R.
 Read taxonomy from a file, from NCBI web services, or from a local
 taxonomizr database.
 
-- [`read_taxonomy()`](https://seantbresnahan.com/metacleaner/reference/read_taxonomy.md)
+- [`read_taxonomy()`](https://sbresnahan.github.io/metacleaner/reference/read_taxonomy.md)
   : Read a taxonomy file
-- [`taxonomy_from_ncbi()`](https://seantbresnahan.com/metacleaner/reference/taxonomy_from_ncbi.md)
+- [`taxonomy_from_ncbi()`](https://sbresnahan.github.io/metacleaner/reference/taxonomy_from_ncbi.md)
   : Look up taxonomy for accessions from NCBI
-- [`taxonomy_from_taxonomizr()`](https://seantbresnahan.com/metacleaner/reference/taxonomy_from_taxonomizr.md)
+- [`taxonomy_from_taxonomizr()`](https://sbresnahan.github.io/metacleaner/reference/taxonomy_from_taxonomizr.md)
   : Look up taxonomy for accessions in a local taxonomizr database
-- [`taxonomic_ranks()`](https://seantbresnahan.com/metacleaner/reference/taxonomic_ranks.md)
+- [`taxonomic_ranks()`](https://sbresnahan.github.io/metacleaner/reference/taxonomic_ranks.md)
   : Taxonomic ranks used by metacleaner
 
 ## Individual steps
@@ -155,30 +140,30 @@ taxonomizr database.
 The search and decision steps that clean_reference() runs, for advanced
 use.
 
-- [`search_sequences()`](https://seantbresnahan.com/metacleaner/reference/search_sequences.md)
+- [`search_sequences()`](https://sbresnahan.github.io/metacleaner/reference/search_sequences.md)
   : Search query sequences against a database of sequences
-- [`classify_queries()`](https://seantbresnahan.com/metacleaner/reference/classify_queries.md)
+- [`classify_queries()`](https://sbresnahan.github.io/metacleaner/reference/classify_queries.md)
   : Decide which query sequences to flag
-- [`blast_available()`](https://seantbresnahan.com/metacleaner/reference/blast_available.md)
+- [`blast_available()`](https://sbresnahan.github.io/metacleaner/reference/blast_available.md)
   : Check whether BLAST+ is installed
 
 ## Working with FASTA files
 
-- [`read_fasta()`](https://seantbresnahan.com/metacleaner/reference/read_fasta.md)
+- [`read_fasta()`](https://sbresnahan.github.io/metacleaner/reference/read_fasta.md)
   : Read sequences from a FASTA file
-- [`write_fasta()`](https://seantbresnahan.com/metacleaner/reference/write_fasta.md)
+- [`write_fasta()`](https://sbresnahan.github.io/metacleaner/reference/write_fasta.md)
   : Write sequences to a FASTA file
-- [`dereplicate()`](https://seantbresnahan.com/metacleaner/reference/dereplicate.md)
+- [`dereplicate()`](https://sbresnahan.github.io/metacleaner/reference/dereplicate.md)
   : Remove duplicate sequences
-- [`reverse_complement()`](https://seantbresnahan.com/metacleaner/reference/reverse_complement.md)
+- [`reverse_complement()`](https://sbresnahan.github.io/metacleaner/reference/reverse_complement.md)
   : Reverse complement DNA sequences
-- [`extract_accession()`](https://seantbresnahan.com/metacleaner/reference/extract_accession.md)
+- [`extract_accession()`](https://sbresnahan.github.io/metacleaner/reference/extract_accession.md)
   : Extract accessions from FASTA header lines
 
 ## About the package
 
-- [`metacleaner`](https://seantbresnahan.com/metacleaner/reference/metacleaner-package.md)
-  [`metacleaner-package`](https://seantbresnahan.com/metacleaner/reference/metacleaner-package.md)
+- [`metacleaner`](https://sbresnahan.github.io/metacleaner/reference/metacleaner-package.md)
+  [`metacleaner-package`](https://sbresnahan.github.io/metacleaner/reference/metacleaner-package.md)
   : metacleaner: Automated Curation of DNA Barcode Reference Databases
 
 # Articles
@@ -186,6 +171,6 @@ use.
 ### Guides
 
 - [Getting started with
-  metacleaner](https://seantbresnahan.com/metacleaner/articles/metacleaner.md):
+  metacleaner](https://sbresnahan.github.io/metacleaner/articles/metacleaner.md):
 - [Building reference and contaminant
-  databases](https://seantbresnahan.com/metacleaner/articles/building-databases.md):
+  databases](https://sbresnahan.github.io/metacleaner/articles/building-databases.md):

@@ -31,8 +31,6 @@ including the sequence search, is built into the package.
 
 ## Installing
 
-Install from CRAN:
-
 ``` r
 
 install.packages("metacleaner", dependencies = TRUE)
@@ -40,21 +38,6 @@ install.packages("metacleaner", dependencies = TRUE)
 
 `dependencies = TRUE` also installs the optional packages used to
 download data and taxonomy from NCBI.
-
-If R reports that package ‘metacleaner’ is not available, it is still
-under review at CRAN. Install it from GitHub instead:
-
-``` r
-
-install.packages("remotes")
-remotes::install_github("sbresnahan/metacleaner", dependencies = TRUE)
-```
-
-Installing from GitHub compiles the package on your computer, so it
-needs build tools:
-[Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows, or
-the Xcode command line tools on macOS (run `xcode-select --install` in
-Terminal). Most Linux systems already have them.
 
 ## Your files
 
@@ -72,9 +55,9 @@ You need:
   be a taxonomy file (for example the `.tax` file made with MetaCurator
   or taxonomizr), or simply `"ncbi"` to look it up online.
 
-[`build_reference_db()`](https://seantbresnahan.com/metacleaner/reference/build_reference_db.md)
+[`build_reference_db()`](https://sbresnahan.github.io/metacleaner/reference/build_reference_db.md)
 can create the reference and contaminant files for you; see
-[`vignette("building-databases")`](https://seantbresnahan.com/metacleaner/articles/building-databases.md).
+[`vignette("building-databases")`](https://sbresnahan.github.io/metacleaner/articles/building-databases.md).
 
 ## A worked example
 
@@ -150,7 +133,7 @@ This writes four files into the folder `cleaned`:
 | `ITS2_summary.txt` | the settings used and the number removed for each reason |
 
 You can also do it all in one go by giving `outdir` to
-[`clean_reference()`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md).
+[`clean_reference()`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md).
 
 ## Choosing settings
 
@@ -182,7 +165,7 @@ You can also do it all in one go by giving `outdir` to
 
 The checks run in this order and each sequence gets the first reason
 that applies; see
-[`?classify_queries`](https://seantbresnahan.com/metacleaner/reference/classify_queries.md)
+[`?classify_queries`](https://sbresnahan.github.io/metacleaner/reference/classify_queries.md)
 for details.
 
 ## Coming from the command-line version

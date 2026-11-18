@@ -22,27 +22,12 @@ command-line tools.
 
 ## Installation
 
-Install from CRAN:
-
 ``` r
 
-install.packages("metacleaner", dependencies = TRUE)
+install.packages("metacleaner", dependencies = TRUE)   # from CRAN
+# development version:
+# install.packages("remotes"); remotes::install_github("sbresnahan/metacleaner")
 ```
-
-If R reports that package ‘metacleaner’ is not available, it is still
-under review at CRAN. Install it from GitHub instead:
-
-``` r
-
-install.packages("remotes")
-remotes::install_github("sbresnahan/metacleaner", dependencies = TRUE)
-```
-
-Installing from GitHub compiles the package on your computer, so it
-needs build tools:
-[Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows, or
-the Xcode command line tools on macOS (run `xcode-select --install` in
-Terminal). Most Linux systems already have them.
 
 ## Quick start
 
@@ -84,17 +69,17 @@ build_reference_db('((((ITS1) OR 5.8S) OR 28S) OR ITS2) NOT Embryophyta[Organism
 ## Documentation
 
 Full documentation, including all help pages and guides, is on the
-package website: <https://seantbresnahan.com/metacleaner/>.
+package website: <https://sbresnahan.github.io/metacleaner/>.
 
-- [`vignette("metacleaner")`](https://seantbresnahan.com/metacleaner/articles/metacleaner.md):
+- [`vignette("metacleaner")`](https://sbresnahan.github.io/metacleaner/articles/metacleaner.md):
   step-by-step guide, explanation of the settings and outputs, and how
   the old command-line options map onto the R arguments.
-- [`vignette("building-databases")`](https://seantbresnahan.com/metacleaner/articles/building-databases.md):
+- [`vignette("building-databases")`](https://sbresnahan.github.io/metacleaner/articles/building-databases.md):
   downloading reference and contaminant databases from NCBI.
-- [`?clean_reference`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md),
-  [`?classify_queries`](https://seantbresnahan.com/metacleaner/reference/classify_queries.md)
+- [`?clean_reference`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md),
+  [`?classify_queries`](https://sbresnahan.github.io/metacleaner/reference/classify_queries.md)
   (exact decision rules) and
-  [`?search_sequences`](https://seantbresnahan.com/metacleaner/reference/search_sequences.md)
+  [`?search_sequences`](https://sbresnahan.github.io/metacleaner/reference/search_sequences.md)
   (search engine details).
 
 ## Output

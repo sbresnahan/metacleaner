@@ -3,6 +3,6 @@
 ### Guides
 
 - [Getting started with
-  metacleaner](https://seantbresnahan.com/metacleaner/articles/metacleaner.md):
+  metacleaner](https://sbresnahan.github.io/metacleaner/articles/metacleaner.md):
 - [Building reference and contaminant
-  databases](https://seantbresnahan.com/metacleaner/articles/building-databases.md):
+  databases](https://sbresnahan.github.io/metacleaner/articles/building-databases.md):
