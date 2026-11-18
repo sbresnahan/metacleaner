@@ -4,7 +4,13 @@ template:
   bootstrap: 5
   bslib:
     primary: "#122a3c"
-    navbar-bg: "#122a3c"
+    # pkgdown renders the navbar with Bootstrap's light background (.bg-light),
+    # so its text must be dark to be readable.
+    navbar-light-color: "#000000"
+    navbar-light-hover-color: "#122a3c"
+    navbar-light-active-color: "#000000"
+    navbar-light-brand-color: "#000000"
+    navbar-light-brand-hover-color: "#122a3c"
   opengraph:
     image:
       src: man/figures/social-preview.png
