@@ -1,0 +1,15 @@
+^.*\.Rproj$
+^README\.Rmd$
+^\.Rproj\.user$
+^\.github$
+^\.github/
+^codecov\.yml$
+^cran-comments\.md$
+^data-raw$
+^validation$
+^LICENSE$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^man/figures/social-preview\.png$
+^\.DS_Store$

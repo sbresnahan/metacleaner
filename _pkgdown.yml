@@ -1,0 +1,63 @@
+url: https://sbresnahan.github.io/metacleaner/
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#122a3c"
+    navbar-bg: "#122a3c"
+  opengraph:
+    image:
+      src: man/figures/social-preview.png
+      alt: "metacleaner: automated curation of barcode sequence databases for metabarcoding and metagenomics"
+
+home:
+  title: "metacleaner: Automated Curation of DNA Barcode Reference Databases"
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+  - title: Clean a reference database
+    desc: >
+      The two functions most users need: run the whole workflow, then save
+      the cleaned FASTA, taxonomy, list of removed sequences and summary.
+    contents:
+      - clean_reference
+      - write_results
+  - title: Build reference and contaminant databases
+    desc: Download sequences from NCBI GenBank inside R.
+    contents:
+      - build_reference_db
+      - download_ncbi_sequences
+  - title: Taxonomy
+    desc: Read taxonomy from a file, from NCBI web services, or from a local taxonomizr database.
+    contents:
+      - read_taxonomy
+      - taxonomy_from_ncbi
+      - taxonomy_from_taxonomizr
+      - taxonomic_ranks
+  - title: Individual steps
+    desc: The search and decision steps that clean_reference() runs, for advanced use.
+    contents:
+      - search_sequences
+      - classify_queries
+      - blast_available
+  - title: Working with FASTA files
+    contents:
+      - read_fasta
+      - write_fasta
+      - dereplicate
+      - reverse_complement
+      - extract_accession
+  - title: About the package
+    contents:
+      - metacleaner-package
+
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - metacleaner
+      - building-databases

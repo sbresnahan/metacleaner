@@ -1,0 +1,16 @@
+bibentry(
+  bibtype = "Article",
+  title = "More than mesolectic: Characterizing the nutritional niche of Osmia cornifrons",
+  author = c(person("Makaylee", "Crone"), person("Natalie", "Boyle"),
+             person(c("Sean", "T."), "Bresnahan"), person("David", "Biddinger"),
+             person(c("Christina", "M."), "Grozinger")),
+  journal = "Ecology and Evolution",
+  year = "2023",
+  volume = "13",
+  pages = "e10640",
+  doi = "10.1002/ece3.10640",
+  textVersion = paste(
+    "Crone, M., Boyle, N., Bresnahan, S.T., Biddinger, D., Grozinger, C.M. (2023).",
+    "More than mesolectic: Characterizing the nutritional niche of Osmia cornifrons.",
+    "Ecology and Evolution 13, e10640. https://doi.org/10.1002/ece3.10640")
+)

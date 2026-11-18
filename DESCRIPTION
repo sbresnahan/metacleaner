@@ -1,0 +1,35 @@
+Package: metacleaner
+Type: Package
+Title: Automated Curation of DNA Barcode Reference Databases
+Version: 2.0.0
+Authors@R: c(
+    person("Sean", "Bresnahan", email = "seantbresnahan3@gmail.com",
+           role = c("aut", "cre", "cph"))
+    )
+Description: Removes mislabeled and contaminant sequences from DNA barcode
+    reference databases used in metabarcoding and metagenomics, such as plant
+    internal transcribed spacer (ITS1/ITS2) databases built from 'NCBI'
+    'GenBank' records. Query sequences are searched against a database of
+    unwanted sequences (for example fungi) and a database of wanted sequences
+    (for example plants) with a built-in k-mer seeded, multithreaded alignment
+    engine written in C++ (or optionally with 'BLAST+'), and sequences whose best matches
+    disagree with their own taxonomy at a chosen rank are flagged and removed.
+    Taxonomy can come from a local table, from 'NCBI' web services, or from a
+    'taxonomizr' database. Helper functions download, tidy and de-replicate
+    reference sequences from 'NCBI'. The method was used in Crone et al. (2023)
+    <doi:10.1002/ece3.10640>.
+License: GPL-3
+URL: https://sbresnahan.github.io/metacleaner/,
+    https://github.com/sbresnahan/metacleaner
+BugReports: https://github.com/sbresnahan/metacleaner/issues
+Encoding: UTF-8
+Depends: R (>= 4.0.0)
+Imports: parallel, Rcpp, stats, utils
+LinkingTo: Rcpp
+Suggests: knitr, rentrez, rmarkdown, taxonomizr, testthat (>= 3.0.0),
+        xml2
+SystemRequirements: BLAST+ (optional; only needed for engine = "blast")
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Language: en-US
+Config/roxygen2/version: 8.1.1

@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.DS_Store
+docs/
+inst/doc
+/doc/
+/Meta/
+src/*.o
+src/*.so
+src/*.dll
+*.tar.gz
+metacleaner.Rcheck/
