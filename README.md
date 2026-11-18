@@ -4,7 +4,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/sbresnahan/metacleaner/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sbresnahan/metacleaner/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/sbresnahan/metacleaner/graph/badge.svg)](https://app.codecov.io/gh/sbresnahan/metacleaner)
-[![pkgdown](https://github.com/sbresnahan/metacleaner/actions/workflows/pkgdown.yaml/badge.svg)](https://sbresnahan.github.io/metacleaner/)
+[![pkgdown](https://github.com/sbresnahan/metacleaner/actions/workflows/pkgdown.yaml/badge.svg)](https://seantbresnahan.com/metacleaner/)
 [![DOI](https://zenodo.org/badge/572172411.svg)](https://zenodo.org/doi/10.5281/zenodo.7920682)
 <!-- badges: end -->
 
@@ -86,7 +86,7 @@ build_reference_db('((((ITS1) OR 5.8S) OR 28S) OR ITS2) NOT Embryophyta[Organism
 ## Documentation
 
 Full documentation, including all help pages and guides, is on the
-package website: <https://sbresnahan.github.io/metacleaner/>.
+package website: <https://seantbresnahan.com/metacleaner/>.
 
 * `vignette("metacleaner")`: step-by-step guide, explanation of the
   settings and outputs, and how the old command-line options map onto the R

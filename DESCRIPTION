@@ -19,7 +19,7 @@ Description: Removes mislabeled and contaminant sequences from DNA barcode
     reference sequences from 'NCBI'. The method was used in Crone et al. (2023)
     <doi:10.1002/ece3.10640>.
 License: GPL-3
-URL: https://sbresnahan.github.io/metacleaner/,
+URL: https://seantbresnahan.com/metacleaner/,
     https://github.com/sbresnahan/metacleaner
 BugReports: https://github.com/sbresnahan/metacleaner/issues
 Encoding: UTF-8
