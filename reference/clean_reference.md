@@ -227,7 +227,7 @@ head(res$flagged)
 # \donttest{
 # save the cleaned database and the report
 write_results(res, outdir = tempdir(), prefix = "example")
-#> Results written to /tmp/RtmpB0WSEb:
+#> Results written to /tmp/RtmpX8yzUw:
 #>   example_clean.fasta
 #>   example_clean.tax
 #>   example_flagged.tsv

@@ -31,6 +31,8 @@ including the sequence search, is built into the package.
 
 ## Installing
 
+Install from CRAN:
+
 ``` r
 
 install.packages("metacleaner", dependencies = TRUE)
@@ -38,6 +40,21 @@ install.packages("metacleaner", dependencies = TRUE)
 
 `dependencies = TRUE` also installs the optional packages used to
 download data and taxonomy from NCBI.
+
+If R reports that package ‘metacleaner’ is not available, it is still
+under review at CRAN. Install it from GitHub instead:
+
+``` r
+
+install.packages("remotes")
+remotes::install_github("sbresnahan/metacleaner", dependencies = TRUE)
+```
+
+Installing from GitHub compiles the package on your computer, so it
+needs build tools:
+[Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows, or
+the Xcode command line tools on macOS (run `xcode-select --install` in
+Terminal). Most Linux systems already have them.
 
 ## Your files
 
