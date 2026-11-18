@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   building-databases: building-databases.html
   metacleaner: metacleaner.html
-last_built: 2026-11-18T15:44Z
+last_built: 2026-11-18T15:58Z
 urls:
-  reference: https://sbresnahan.github.io/metacleaner/reference
-  article: https://sbresnahan.github.io/metacleaner/articles
+  reference: https://seantbresnahan.com/metacleaner/reference
+  article: https://seantbresnahan.com/metacleaner/articles

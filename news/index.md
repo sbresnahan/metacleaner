@@ -9,9 +9,9 @@ as v1.0.0 on GitHub.
 ### New features
 
 - One function,
-  [`clean_reference()`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md),
+  [`clean_reference()`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md),
   runs the whole workflow;
-  [`write_results()`](https://sbresnahan.github.io/metacleaner/reference/write_results.md)
+  [`write_results()`](https://seantbresnahan.com/metacleaner/reference/write_results.md)
   saves the cleaned FASTA, taxonomy, a report of flagged sequences and a
   summary.
 - Built-in C++ search engine: BLAST+, Python, pyfasta and shell tools
@@ -21,16 +21,16 @@ as v1.0.0 on GitHub.
   QIIME-style lineage strings or a table), from NCBI web services
   (`taxonomy = "ncbi"`, only the needed accessions are looked up), from
   a local taxonomizr database, or from several of these in turn.
-- [`build_reference_db()`](https://sbresnahan.github.io/metacleaner/reference/build_reference_db.md)
+- [`build_reference_db()`](https://seantbresnahan.com/metacleaner/reference/build_reference_db.md)
   and
-  [`download_ncbi_sequences()`](https://sbresnahan.github.io/metacleaner/reference/download_ncbi_sequences.md)
+  [`download_ncbi_sequences()`](https://seantbresnahan.com/metacleaner/reference/download_ncbi_sequences.md)
   replace the shell recipe for building reference and contaminant
   databases;
-  [`read_fasta()`](https://sbresnahan.github.io/metacleaner/reference/read_fasta.md),
-  [`write_fasta()`](https://sbresnahan.github.io/metacleaner/reference/write_fasta.md),
-  [`dereplicate()`](https://sbresnahan.github.io/metacleaner/reference/dereplicate.md)
+  [`read_fasta()`](https://seantbresnahan.com/metacleaner/reference/read_fasta.md),
+  [`write_fasta()`](https://seantbresnahan.com/metacleaner/reference/write_fasta.md),
+  [`dereplicate()`](https://seantbresnahan.com/metacleaner/reference/dereplicate.md)
   and
-  [`extract_accession()`](https://sbresnahan.github.io/metacleaner/reference/extract_accession.md)
+  [`extract_accession()`](https://seantbresnahan.com/metacleaner/reference/extract_accession.md)
   replace the awk/perl/sed/seqkit steps.
 - FASTA files may be wrapped or gzip-compressed.
 

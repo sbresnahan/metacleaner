@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/sbresnahan/metacleaner/blob/v2.0.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/sbresnahan/metacleaner/blob/main/inst/CITATION)
 
 Crone, M., Boyle, N., Bresnahan, S.T., Biddinger, D., Grozinger, C.M.
 (2023). More than mesolectic: Characterizing the nutritional niche of

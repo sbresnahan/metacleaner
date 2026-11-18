@@ -170,7 +170,7 @@ res <- clean_reference(
 #>   retrieving taxonomy for 171 sequence(s)
 #>   0 sequence(s) have no qualifying match in the reference database (0 more rescued by their best hit)
 #>   6 sequence(s) match more than one genus; 0 match a different genus
-#> Done: kept 40 of 52 sequences, flagged 12 (0.3 s).
+#> Done: kept 40 of 52 sequences, flagged 12 (0.2 s).
 res
 #> <metacleaner result>
 #>   query sequences:   52
@@ -227,7 +227,7 @@ head(res$flagged)
 # \donttest{
 # save the cleaned database and the report
 write_results(res, outdir = tempdir(), prefix = "example")
-#> Results written to /tmp/Rtmp0giIis:
+#> Results written to /tmp/Rtmp48cpA7:
 #>   example_clean.fasta
 #>   example_clean.tax
 #>   example_flagged.tsv

@@ -8,7 +8,7 @@ clean:
 - a **contaminant** set of groups that should not be in your database
   (e.g. all non-plant ITS sequences).
 
-[`build_reference_db()`](https://sbresnahan.github.io/metacleaner/reference/build_reference_db.md)
+[`build_reference_db()`](https://seantbresnahan.com/metacleaner/reference/build_reference_db.md)
 downloads these from NCBI and tidies them in one step: it keeps only the
 accession in each header, removes empty sequences and writes each
 sequence on a single line. Previously this took a mix of R, `awk`,
@@ -61,7 +61,7 @@ metacleaner can no longer flag a query as “matches multiple genus”.
 ## Taxonomy
 
 The easiest option is `taxonomy = "ncbi"` in
-[`clean_reference()`](https://sbresnahan.github.io/metacleaner/reference/clean_reference.md).
+[`clean_reference()`](https://seantbresnahan.com/metacleaner/reference/clean_reference.md).
 It looks up only the accessions that are needed. To avoid downloading
 them again in later runs, look them up once and save them:
 
